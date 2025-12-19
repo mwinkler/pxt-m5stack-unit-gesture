@@ -1,0 +1,20 @@
+{
+    "name": "pxt-PAJ7620U2",
+    "version": "1.0.0",
+    "description": "PAJ7620U2 Gesture Sensor",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true,
+    "supportedTargets": [
+        "microbit",
+        "calliopemini"
+    ]
+}

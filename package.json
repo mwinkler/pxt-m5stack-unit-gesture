@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "pxt-calliopemini": "^8.1.11",
+    "pxt-microbit": "^8.1.6"
+  }
+}
