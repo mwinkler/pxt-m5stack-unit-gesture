@@ -9,5 +9,6 @@
         "README.md",
         "main.ts"
     ],
+    "icon": "icon.png",
     "public": true
 }
