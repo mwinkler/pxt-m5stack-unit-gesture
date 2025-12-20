@@ -145,10 +145,10 @@ namespace m5gesture {
     }
 
     /**
-     * Initialize the PAJ7620U2 gesture sensor
+     * Initialize the M5 gesture sensor
      */
-    //% blockId=paj7620_init
-    //% block="initialize PAJ7620U2"
+    //% blockId=m5gesture_init
+    //% block="initialize M5 gesture sensor"
     //% weight=100
     //% blockGap=8
     export function init(): void {
@@ -182,7 +182,7 @@ namespace m5gesture {
      * Set gesture detection mode
      * @param highRate true for fast detection, false for slow detection with combined gestures
      */
-    //% blockId=paj7620_set_mode
+    //% blockId=m5gesture_set_mode
     //% block="set gesture mode high rate %highRate"
     //% highRate.shadow="toggleYesNo"
     //% highRate.defl=true
@@ -195,7 +195,7 @@ namespace m5gesture {
      * Get detected gesture
      * Returns the currently detected gesture
      */
-    //% blockId=paj7620_get_gesture
+    //% blockId=m5gesture_get_gesture
     //% block="get gesture"
     //% weight=80
     export function getGesture(): Gesture {
@@ -246,7 +246,7 @@ namespace m5gesture {
      * Check if a specific gesture is detected
      * @param gesture the gesture to check
      */
-    //% blockId=paj7620_is_gesture
+    //% blockId=m5gesture_is_gesture
     //% block="gesture is %gesture"
     //% weight=70
     export function isGesture(gesture: Gesture): boolean {
@@ -257,7 +257,7 @@ namespace m5gesture {
      * Get gesture name as string
      * @param gesture the gesture to convert to string
      */
-    //% blockId=paj7620_gesture_name
+    //% blockId=m5gesture_gesture_name
     //% block="name of gesture %gesture"
     //% weight=60
     export function gestureName(gesture: Gesture): string {
