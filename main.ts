@@ -148,7 +148,7 @@ namespace m5gesture {
      * Initialize the M5 gesture sensor
      */
     //% blockId=m5gesture_init
-    //% block="initialize M5 gesture sensor"
+    //% block="initialize gesture sensor"
     //% weight=100
     //% blockGap=8
     export function init(): void {
