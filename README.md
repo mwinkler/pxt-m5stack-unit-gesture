@@ -20,21 +20,15 @@ Initialize the sensor once, then read gestures in a loop.
 
 ```ts
 m5gesture.init()
-m5gesture.setGestureHighRate(true)
 
-basic.forever(() => {
-		const g = m5gesture.getGesture()
-		if (g != m5gesture.Gesture.None) {
-				basic.showString(m5gesture.gestureName(g))
-		}
-		basic.pause(200)
+m5gesture.onGestureChanged(function (gesture) {
+    basic.showString(m5gesture.gestureName(gesture))
 })
 ```
 
 ## Blocks
 
 - Initialize: “initialize M5 Gesture”
-- Mode: “set gesture mode high rate”
 - Read: “get gesture”
 - Predicate: “gesture is …”
 - Name: “name of gesture …”
@@ -49,12 +43,4 @@ basic.forever(() => {
 
 MIT
 
----
 
-If you publish this repository to GitHub Pages, you can embed the blocks view on the project page:
-
-<script src="https://makecode.com/gh-pages-embed.js"></script>
-<script>
-	makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");
-	// Replace with your GitHub org/repo once published.
-</script>

@@ -8,24 +8,23 @@
 //% color=#0079B9 icon="\uf256" block="M5 Gesture"
 namespace m5gesture {
     // Device ID
-    const PAJ7620_IIC_ADDR = 0x73
-    const PAJ7620_PARTID = 0x7620
+    const PAJ7620_IIC_ADDR = 0x73;
+    const PAJ7620_PARTID = 0x7620;
 
     // Register Bank Select
-    const PAJ7620_REGITER_BANK_SEL = 0xEF
+    const PAJ7620_REGITER_BANK_SEL = 0xEF;
 
     // Register Bank 0
-    const PAJ7620_ADDR_PART_ID_LOW = 0x00
-    const PAJ7620_ADDR_PART_ID_HIGH = 0x01
-    const PAJ7620_ADDR_GES_PS_DET_FLAG_0 = 0x43
-    const PAJ7620_ADDR_GES_PS_DET_FLAG_1 = 0x44
+    const PAJ7620_ADDR_PART_ID_LOW = 0x00;
+    const PAJ7620_ADDR_PART_ID_HIGH = 0x01;
+    const PAJ7620_ADDR_GES_PS_DET_FLAG_0 = 0x43;
+    const PAJ7620_ADDR_GES_PS_DET_FLAG_1 = 0x44;
 
     // Banks
-    const PAJ7620_BANK0 = 0
-    const PAJ7620_BANK1 = 1
+    const PAJ7620_BANK0 = 0;
+    const PAJ7620_BANK1 = 1;
 
-    let isInitialized = false
-    let gestureHighRate = true
+    let isInitialized = false;
 
     /**
      * Gesture types
@@ -50,9 +49,7 @@ namespace m5gesture {
         //% block="Anti-Clockwise"
         AntiClockwise = 0x80,
         //% block="Wave"
-        Wave = 0x100,
-        //% block="Wave Slowly"
-        WaveSlowly = 0x200
+        Wave = 0x100
     }
 
     // Initialization register array
@@ -118,22 +115,22 @@ namespace m5gesture {
      * Write data to register
      */
     function writeReg(reg: number, value: number): void {
-        let buf = pins.createBuffer(2)
-        buf[0] = reg
-        buf[1] = value
-        pins.i2cWriteBuffer(PAJ7620_IIC_ADDR, buf)
+        let buf = pins.createBuffer(2);
+        buf[0] = reg;
+        buf[1] = value;
+        pins.i2cWriteBuffer(PAJ7620_IIC_ADDR, buf);
     }
 
     /**
      * Read data from register
      */
     function readReg(reg: number, len: number = 1): number {
-        pins.i2cWriteNumber(PAJ7620_IIC_ADDR, reg, NumberFormat.UInt8BE)
+        pins.i2cWriteNumber(PAJ7620_IIC_ADDR, reg, NumberFormat.UInt8BE);
         if (len == 1) {
-            return pins.i2cReadNumber(PAJ7620_IIC_ADDR, NumberFormat.UInt8BE)
+            return pins.i2cReadNumber(PAJ7620_IIC_ADDR, NumberFormat.UInt8BE);
         } else {
-            let buf = pins.i2cReadBuffer(PAJ7620_IIC_ADDR, len)
-            return buf[0]
+            let buf = pins.i2cReadBuffer(PAJ7620_IIC_ADDR, len);
+            return buf[0];
         }
     }
 
@@ -141,7 +138,7 @@ namespace m5gesture {
      * Select register bank
      */
     function selectBank(bank: number): void {
-        writeReg(PAJ7620_REGITER_BANK_SEL, bank)
+        writeReg(PAJ7620_REGITER_BANK_SEL, bank);
     }
 
     /**
@@ -152,43 +149,29 @@ namespace m5gesture {
     //% weight=100
     //% blockGap=8
     export function init(): void {
-        basic.pause(100)
+        basic.pause(100);
         
         // Check device ID
-        selectBank(PAJ7620_BANK0)
-        basic.pause(10)
+        selectBank(PAJ7620_BANK0);
+        basic.pause(10);
         
-        let lowByte = readReg(PAJ7620_ADDR_PART_ID_LOW)
-        let highByte = readReg(PAJ7620_ADDR_PART_ID_HIGH)
-        let partId = (highByte << 8) | lowByte
+        let lowByte = readReg(PAJ7620_ADDR_PART_ID_LOW);
+        let highByte = readReg(PAJ7620_ADDR_PART_ID_HIGH);
+        let partId = (highByte << 8) | lowByte;
         
         if (partId != PAJ7620_PARTID) {
-            isInitialized = false
-            return
+            isInitialized = false;
+            return;
         }
 
         // Write initialization registers
         for (let i = 0; i < initRegArray.length; i++) {
-            writeReg(initRegArray[i][0], initRegArray[i][1])
+            writeReg(initRegArray[i][0], initRegArray[i][1]);
         }
 
-        selectBank(PAJ7620_BANK0)
-        basic.pause(100)
-        isInitialized = true
-    }
-
-    /**
-     * Set gesture detection mode - true for fast detection, false for slow detection with combined gestures
-     * @param highRate true for fast detection, false for slow detection with combined gestures
-     */
-    //% blockId=m5gesture_set_mode
-    //% block="set gesture mode high rate %highRate"
-    //% highRate.shadow="toggleYesNo"
-    //% highRate.defl=true
-    //% weight=90
-    //% advanced=true
-    export function setGestureHighRate(highRate: boolean): void {
-        gestureHighRate = highRate
+        selectBank(PAJ7620_BANK0);
+        basic.pause(100);
+        isInitialized = true;
     }
 
     /**
@@ -200,57 +183,48 @@ namespace m5gesture {
     //% weight=80
     export function getGesture(): Gesture {
         if (!isInitialized) {
-            return Gesture.None
+            return Gesture.None;
         }
 
-        let gesture = 0
+        let gesture = 0;
         
         // Read gesture flag register 1 first (for Wave detection)
-        let flag1 = readReg(PAJ7620_ADDR_GES_PS_DET_FLAG_1)
-        gesture = flag1 << 8
+        let flag1 = readReg(PAJ7620_ADDR_GES_PS_DET_FLAG_1);
+        gesture = flag1 << 8;
 
         if (gesture == Gesture.Wave) {
-            basic.pause(1000)
-            return Gesture.Wave
+            basic.pause(1000);
+            return Gesture.Wave;
         }
 
         // Read gesture flag register 0
-        let flag0 = readReg(PAJ7620_ADDR_GES_PS_DET_FLAG_0)
-        gesture = flag0 & 0x00FF
+        let flag0 = readReg(PAJ7620_ADDR_GES_PS_DET_FLAG_0);
+        gesture = flag0 & 0x00FF;
 
-        // In slow mode, check for combined gestures
-        if (!gestureHighRate && gesture != Gesture.None) {
-            basic.pause(2000)
-            let flag0_2 = readReg(PAJ7620_ADDR_GES_PS_DET_FLAG_0)
-            gesture = gesture | flag0_2
-            basic.pause(200)
-        }
-
+        // Short pause for other gestures
         if (gesture != Gesture.None) {
-            basic.pause(100)
+            basic.pause(100);
         }
 
         // Handle Forward/Backward with longer pause
         if (gesture == Gesture.Forward || gesture == Gesture.Backward) {
-            if (gestureHighRate) {
-                basic.pause(200)
-            } else {
-                basic.pause(1000)
-            }
+            basic.pause(200);
         }
 
-        return gesture as Gesture
+        return gesture as Gesture;
     }
 
     /**
-     * Check if a specific gesture is detected
-     * @param gesture the gesture to check
+     * Check if a specific gesture matches the detected gesture
+     * @param value the detected gesture value
+     * @param gesture the gesture to check against
      */
     //% blockId=m5gesture_is_gesture
-    //% block="gesture is %gesture"
+    //% block="gesture %value is %gesture"
+    //% value.shadow="m5gesture_get_gesture"
     //% weight=70
-    export function isGesture(gesture: Gesture): boolean {
-        return getGesture() == gesture
+    export function isGesture(value: number, gesture: Gesture): boolean {
+        return value == gesture;
     }
 
     /**
@@ -259,47 +233,48 @@ namespace m5gesture {
      */
     //% blockId=m5gesture_gesture_name
     //% block="name of gesture %gesture"
+    //% gesture.shadow="m5gesture_get_gesture"
     //% weight=60
     //% advanced=true
-    export function gestureName(gesture: Gesture): string {
+    export function gestureName(gesture: number): string {
         switch (gesture) {
-            case Gesture.None: return "None"
-            case Gesture.Right: return "Right"
-            case Gesture.Left: return "Left"
-            case Gesture.Up: return "Up"
-            case Gesture.Down: return "Down"
-            case Gesture.Forward: return "Forward"
-            case Gesture.Backward: return "Backward"
-            case Gesture.Clockwise: return "Clockwise"
-            case Gesture.AntiClockwise: return "Anti-Clockwise"
-            case Gesture.Wave: return "Wave"
-            case Gesture.WaveSlowly: return "Wave Slowly"
-            default: return "Unknown"
+            case Gesture.None: return "None";
+            case Gesture.Right: return "Right";
+            case Gesture.Left: return "Left";
+            case Gesture.Up: return "Up";
+            case Gesture.Down: return "Down";
+            case Gesture.Forward: return "Forward";
+            case Gesture.Backward: return "Backward";
+            case Gesture.Clockwise: return "Clockwise";
+            case Gesture.AntiClockwise: return "Anti-Clockwise";
+            case Gesture.Wave: return "Wave";
+            default: return "Unknown " + gesture;
         }
     }
 
     // Internal: handlers and watcher for gesture change events
-    let _gestureChangeHandlers: ((gesture: Gesture) => void)[] = []
-    let _watcherStarted = false
+    let _gestureChangeHandlers: ((gesture: Gesture) => void)[] = [];
+    let _watcherStarted = false;
 
     function _startWatcher(): void {
-        if (_watcherStarted) return
-        _watcherStarted = true
+        if (_watcherStarted) return;
+        _watcherStarted = true;
         control.inBackground(() => {
-            let last = Gesture.None
+            let last = Gesture.None;
             while (true) {
                 if (isInitialized) {
-                    const g = getGesture()
+                    const g = getGesture();
                     if (g != last) {
-                        last = g
+                        last = g;
                         for (const h of _gestureChangeHandlers) {
-                            h(g)
+                            h(g);
                         }
                     }
+                } else {
+                    basic.pause(1000);
                 }
-                basic.pause(100)
             }
-        })
+        });
     }
 
     /**
@@ -311,7 +286,7 @@ namespace m5gesture {
     //% draggableParameters="reporter"
     //% weight=85
     export function onGestureChanged(handler: (gesture: Gesture) => void): void {
-        _gestureChangeHandlers.push(handler)
-        _startWatcher()
+        _gestureChangeHandlers.push(handler);
+        _startWatcher();
     }
 }
