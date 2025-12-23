@@ -179,7 +179,7 @@ namespace m5gesture {
      * Returns the currently detected gesture
      */
     //% blockId=m5gesture_get_gesture
-    //% block="get gesture"
+    //% block="gesture"
     //% weight=80
     export function getGesture(): Gesture {
         if (!isInitialized) {
